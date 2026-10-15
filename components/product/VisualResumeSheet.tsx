@@ -320,7 +320,7 @@ export const VisualResumeSheet: React.FC<VisualResumeSheetProps> = ({ showTopBar
 
         <div className="flex items-center gap-3">
           <a
-            href="https://linkedin.com/in/palak-bhatt"
+            href="https://www.linkedin.com/in/palakbhatt1"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:underline"
@@ -329,7 +329,7 @@ export const VisualResumeSheet: React.FC<VisualResumeSheetProps> = ({ showTopBar
           </a>
           <span>·</span>
           <a
-            href="https://github.com/palak-bhatt"
+            href="https://github.com/palakbhatt1"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:underline"

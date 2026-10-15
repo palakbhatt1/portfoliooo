@@ -28,15 +28,16 @@ export const ProductHero: React.FC = () => {
           AI, DESIGN &amp; DEVELOPMENT
         </div>
 
-        {/* Bio Paragraphs (Exact copy from mockup) */}
+        {/* Bio Paragraphs */}
         <div className="space-y-3 text-xs sm:text-[12px] text-neutral-700 leading-relaxed font-mono">
           <p>
-            I enjoy building products from concept to deployment, blending user research, product
-            thinking, and technology to create meaningful, accessible digital experiences.
+            I enjoy working at the intersection of AI, design, and product development, combining
+            technical exploration, product thinking, and user-centered design to turn ideas into
+            meaningful digital experiences.
           </p>
           <p>
-            I’m driven by curiosity and a desire to turn real user needs into products that are
-            thoughtful, useful, and impactful.
+            Driven by curiosity, I enjoy exploring AI/ML, understanding user needs, and building
+            thoughtful, useful products that solve real-world problems.
           </p>
         </div>
 
@@ -75,6 +76,8 @@ export const ProductHero: React.FC = () => {
               alt="Palak Bhatt"
               fill
               priority
+              unoptimized
+              sizes="(max-width: 640px) 350px, 385px"
               className="object-cover object-[center_top]"
             />
           </div>

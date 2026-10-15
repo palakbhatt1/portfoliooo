@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://palakbhatt.dev"),
   title: "Palak Bhatt — AI, Design & Development",
   description:
-    "Palak Bhatt — AI, Design & Development. Blending user research, product thinking, and technology to create meaningful digital experiences.",
+    "Palak Bhatt — AI, Design & Development. Working at the intersection of AI, design, and product development to turn ideas into meaningful digital experiences.",
   keywords: [
     "Palak Bhatt",
     "AI, Design & Development",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Palak Bhatt — AI, Design & Development",
     description:
-      "Palak Bhatt — AI, Design & Development. Blending user research, product thinking, and technology to create meaningful digital experiences.",
+      "Palak Bhatt — AI, Design & Development. Working at the intersection of AI, design, and product development to turn ideas into meaningful digital experiences.",
     type: "website",
     locale: "en_US",
     images: [
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Palak Bhatt — AI, Design & Development",
     description:
-      "Palak Bhatt — AI, Design & Development. Blending user research, product thinking, and technology to create meaningful digital experiences.",
+      "Palak Bhatt — AI, Design & Development. Working at the intersection of AI, design, and product development to turn ideas into meaningful digital experiences.",
     images: ["/creative-license.png"],
   },
 };

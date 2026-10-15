@@ -65,7 +65,7 @@ body {
   align-items: center;
   width: 24px;
   height: 5px;
-  margin: 3px auto 0 auto;
+  margin: 0 auto;
 }
 
 .nav-slider-line {
@@ -87,6 +87,20 @@ body {
   background-color: #cfcfcf;
   width: 100%;
   margin: 2rem 0;
+}
+
+/* Animated Pixel Frog Idle Sprite */
+@keyframes frog-idle-anim {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-frog-idle {
+  animation: frog-idle-anim 1.2s steps(4) infinite;
 }
 
 .shadow-2xs {

@@ -32,10 +32,10 @@ export const ProductHeader: React.FC = () => {
         </span>
       </Link>
 
-      {/* Right: Nav Items (Home, Projects, Resume, Contact) */}
+      {/* Right: Nav Items (Home, Projects, Resume, About, Contact) */}
       <nav className="flex items-center gap-5 sm:gap-7 text-xs sm:text-[13px]">
         {/* Home */}
-        <div className="relative flex flex-col items-center">
+        <div className="relative flex items-center justify-center">
           <Link
             href="/"
             className={`transition-colors ${
@@ -47,16 +47,18 @@ export const ProductHeader: React.FC = () => {
             Home
           </Link>
           {isHome && (
-            <div className="nav-slider">
-              <div className="nav-slider-line" />
-              <div className="nav-slider-dot" />
-              <div className="nav-slider-line" />
+            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 pointer-events-none">
+              <div className="nav-slider">
+                <div className="nav-slider-line" />
+                <div className="nav-slider-dot" />
+                <div className="nav-slider-line" />
+              </div>
             </div>
           )}
         </div>
 
         {/* Projects */}
-        <div className="relative flex flex-col items-center">
+        <div className="relative flex items-center justify-center">
           <Link
             href="/projects"
             className={`transition-colors ${
@@ -68,16 +70,18 @@ export const ProductHeader: React.FC = () => {
             Projects
           </Link>
           {isProjects && (
-            <div className="nav-slider">
-              <div className="nav-slider-line" />
-              <div className="nav-slider-dot" />
-              <div className="nav-slider-line" />
+            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 pointer-events-none">
+              <div className="nav-slider">
+                <div className="nav-slider-line" />
+                <div className="nav-slider-dot" />
+                <div className="nav-slider-line" />
+              </div>
             </div>
           )}
         </div>
 
         {/* Resume */}
-        <div className="relative flex flex-col items-center">
+        <div className="relative flex items-center justify-center">
           <Link
             href="/resume"
             className={`transition-colors ${
@@ -89,16 +93,18 @@ export const ProductHeader: React.FC = () => {
             Resume
           </Link>
           {isResume && (
-            <div className="nav-slider">
-              <div className="nav-slider-line" />
-              <div className="nav-slider-dot" />
-              <div className="nav-slider-line" />
+            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 pointer-events-none">
+              <div className="nav-slider">
+                <div className="nav-slider-line" />
+                <div className="nav-slider-dot" />
+                <div className="nav-slider-line" />
+              </div>
             </div>
           )}
         </div>
 
         {/* About */}
-        <div className="relative flex flex-col items-center">
+        <div className="relative flex items-center justify-center">
           <Link
             href="/about"
             className={`transition-colors ${
@@ -110,16 +116,18 @@ export const ProductHeader: React.FC = () => {
             About
           </Link>
           {isAbout && (
-            <div className="nav-slider">
-              <div className="nav-slider-line" />
-              <div className="nav-slider-dot" />
-              <div className="nav-slider-line" />
+            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 pointer-events-none">
+              <div className="nav-slider">
+                <div className="nav-slider-line" />
+                <div className="nav-slider-dot" />
+                <div className="nav-slider-line" />
+              </div>
             </div>
           )}
         </div>
 
         {/* Contact anchor */}
-        <div className="relative flex flex-col items-center">
+        <div className="relative flex items-center justify-center">
           <a
             href="/#contact"
             className="font-medium text-neutral-600 hover:text-neutral-900 transition-colors"

@@ -82,9 +82,6 @@ export const ProductEducationExperience: React.FC = () => {
                   <span className="text-neutral-500 font-bold">2026</span>
                 </div>
               </div>
-              <p className="text-neutral-600 text-xs leading-relaxed">
-                Led AbleCircle from user needs to product requirements and implementation.
-              </p>
             </div>
 
             {/* Item 2: USTART */}
@@ -99,9 +96,6 @@ export const ProductEducationExperience: React.FC = () => {
                   <span className="text-neutral-500 font-bold">2025</span>
                 </div>
               </div>
-              <p className="text-neutral-600 text-xs leading-relaxed">
-                Created 100+ high-fidelity designs and prototypes for web and mobile.
-              </p>
             </div>
           </div>
         </div>
