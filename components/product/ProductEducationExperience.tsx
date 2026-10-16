@@ -6,9 +6,9 @@ import Link from "next/link";
 export const ProductEducationExperience: React.FC = () => {
   return (
     <section className="border-t border-neutral-200 pt-10 sm:pt-12 pb-12 sm:pb-14 font-space-mono">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-0">
         {/* LEFT: EDUCATION */}
-        <div className="space-y-6 md:pr-6 md:border-r md:border-neutral-200">
+        <div className="space-y-6 md:pr-8 lg:pr-10 md:border-r md:border-neutral-200">
           <h2 className="text-sm sm:text-base font-bold tracking-[0.2em] uppercase text-neutral-900">
             EDUCATION
           </h2>
@@ -53,7 +53,7 @@ export const ProductEducationExperience: React.FC = () => {
         </div>
 
         {/* RIGHT: EXPERIENCE */}
-        <div className="space-y-6 md:pl-2">
+        <div className="space-y-6 md:pl-8 lg:pl-10">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <h2 className="text-sm sm:text-base font-bold tracking-[0.2em] uppercase text-neutral-900">
               EXPERIENCE

@@ -10,12 +10,20 @@ export const ProductHeader: React.FC = () => {
   const isHome = pathname === "/";
   const isProjects = pathname.startsWith("/projects") || pathname.startsWith("/work");
   const isResume = pathname.startsWith("/resume");
-  const isAbout = pathname.startsWith("/about");
+
+  const handleGoHome = () => {
+    try {
+      sessionStorage.setItem("palak_intro_seen", "true");
+      localStorage.setItem("palak_intro_seen", "true");
+    } catch {
+      // Ignore
+    }
+  };
 
   return (
     <header className="w-full max-w-4xl mx-auto px-6 sm:px-8 pt-6 sm:pt-10 pb-4 flex items-center justify-between font-space-mono">
       {/* Left: Emblem + PALAK BHATT */}
-      <Link href="/" className="flex items-center gap-3 group text-neutral-900">
+      <Link href="/" onClick={handleGoHome} className="flex items-center gap-3 group text-neutral-900">
         <div className="w-6 h-6 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110">
           <svg className="w-5 h-5 text-neutral-900" viewBox="0 0 24 24" fill="none">
             <path
@@ -32,12 +40,13 @@ export const ProductHeader: React.FC = () => {
         </span>
       </Link>
 
-      {/* Right: Nav Items (Home, Projects, Resume, About, Contact) */}
+      {/* Right: Nav Items (Home, Projects, Resume) */}
       <nav className="flex items-center gap-5 sm:gap-7 text-xs sm:text-[13px]">
         {/* Home */}
         <div className="relative flex items-center justify-center">
           <Link
             href="/"
+            onClick={handleGoHome}
             className={`transition-colors ${
               isHome
                 ? "font-bold text-neutral-900"
@@ -101,39 +110,6 @@ export const ProductHeader: React.FC = () => {
               </div>
             </div>
           )}
-        </div>
-
-        {/* About */}
-        <div className="relative flex items-center justify-center">
-          <Link
-            href="/about"
-            className={`transition-colors ${
-              isAbout
-                ? "font-bold text-neutral-900"
-                : "font-medium text-neutral-600 hover:text-neutral-900"
-            }`}
-          >
-            About
-          </Link>
-          {isAbout && (
-            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 pointer-events-none">
-              <div className="nav-slider">
-                <div className="nav-slider-line" />
-                <div className="nav-slider-dot" />
-                <div className="nav-slider-line" />
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Contact anchor */}
-        <div className="relative flex items-center justify-center">
-          <a
-            href="/#contact"
-            className="font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
-          >
-            Contact
-          </a>
         </div>
       </nav>
     </header>

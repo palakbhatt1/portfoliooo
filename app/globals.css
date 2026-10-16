@@ -1,11 +1,13 @@
 @import "tailwindcss";
 
+/* Design System & Custom Tokens */
 :root {
   --CreativeLicenceBackground: #92a878;
   --intro-bg: var(--CreativeLicenceBackground);
   --font-mono: var(--font-space-mono), 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --font-sans: var(--font-sans), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-pixel: 'Silkscreen', 'Pixelify Sans', monospace;
+  --font-typewriter: 'Courier Prime', 'Courier New', Courier, monospace;
 }
 
 html {
@@ -29,6 +31,10 @@ body {
 
 .font-space-mono {
   font-family: var(--font-mono), monospace;
+}
+
+.font-typewriter {
+  font-family: var(--font-typewriter), 'Courier Prime', 'Courier New', Courier, monospace;
 }
 
 /* Exact Chamfer / Cut-Corner Octagon for the Photo Frame */

@@ -53,22 +53,10 @@ export const ProductHero: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Column: Candid Speaking Photo in Chamfered Frame with Decorations (Width ~52%) */}
-      <div className="w-full md:w-[52%] flex items-center justify-center md:justify-end gap-4 py-2 md:py-0">
-        {/* Photo Container with Top-Left Plus and Bottom-Right Pixel Cluster */}
+      {/* Right Column: Candid Speaking Photo in Chamfered Frame (Width ~52%) */}
+      <div className="w-full md:w-[52%] flex items-center justify-center md:justify-end py-2 md:py-0">
+        {/* Photo Container */}
         <div className="relative w-full max-w-[350px] sm:max-w-[385px] aspect-[0.98/1]">
-          {/* Top-Left Decorative Green Plus */}
-          <div className="absolute -top-3 -left-4 text-[#7ba56a] font-bold text-xl select-none leading-none z-10">
-            +
-          </div>
-
-          {/* Bottom-Right Decorative Green Pixel Cluster */}
-          <div className="absolute -bottom-2.5 -right-3 flex flex-col items-end gap-[2px] z-10 select-none">
-            <div className="w-2.5 h-2.5 bg-[#7ba56a]" />
-            <div className="w-3.5 h-3.5 border-2 border-[#7ba56a] bg-transparent translate-x-1" />
-            <div className="w-2.5 h-2.5 bg-[#7ba56a] translate-x-2" />
-          </div>
-
           {/* Curved Photo Frame */}
           <div className="w-full h-full rounded-[48px] sm:rounded-[56px] overflow-hidden bg-neutral-100 relative">
             <Image
@@ -81,16 +69,6 @@ export const ProductHero: React.FC = () => {
               className="object-cover object-[center_top]"
             />
           </div>
-        </div>
-
-        {/* 6 Small Square Hollow Green Glyphs Stacked Vertically on Far Right */}
-        <div className="hidden sm:flex flex-col gap-3 py-4 select-none">
-          <div className="w-3 h-3 border border-[#7ba56a]" />
-          <div className="w-3 h-3 border border-[#7ba56a]" />
-          <div className="w-3 h-3 border border-[#7ba56a]" />
-          <div className="w-3 h-3 border border-[#7ba56a]" />
-          <div className="w-3 h-3 border border-[#7ba56a]" />
-          <div className="w-3 h-3 border border-[#7ba56a]" />
         </div>
       </div>
     </section>
