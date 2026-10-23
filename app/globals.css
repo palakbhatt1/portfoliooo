@@ -146,3 +146,67 @@ body {
   user-select: none;
   touch-action: none;
 }
+
+/* Avatar curious idle micro-movement to attract user attention (slow & gentle) */
+@keyframes avatar-curious-pop {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  12% {
+    transform: translateY(-5px) rotate(-3.5deg) scale(1.02);
+  }
+  24% {
+    transform: translateY(-2px) rotate(2.5deg) scale(1.01);
+  }
+  36% {
+    transform: translateY(-4px) rotate(-1.5deg) scale(1.02);
+  }
+  48% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  56% {
+    transform: translateY(-1px) scale(1.01);
+  }
+  64% {
+    transform: translateY(0) scale(1);
+  }
+  /* Generous calm pause between relaxed, curious floats */
+  76%, 94% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+}
+
+.animate-avatar-curious {
+  animation: avatar-curious-pop 4.8s ease-in-out infinite;
+  transform-origin: bottom center;
+  display: inline-block;
+  will-change: transform;
+}
+
+/* Project Detail Drawer Animations */
+@keyframes slide-in-left {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slideLeft {
+  animation: slide-in-left 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fadeIn {
+  animation: fade-in 0.2s ease-out forwards;
+}
+

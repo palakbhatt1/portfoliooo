@@ -14,7 +14,6 @@ export const ProductHeader: React.FC = () => {
   const handleGoHome = () => {
     try {
       sessionStorage.setItem("palak_intro_seen", "true");
-      localStorage.setItem("palak_intro_seen", "true");
     } catch {
       // Ignore
     }

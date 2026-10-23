@@ -53,6 +53,15 @@ export const metadata: Metadata = {
       "Palak Bhatt — AI, Design & Development. Working at the intersection of AI, design, and product development to turn ideas into meaningful digital experiences.",
     images: ["/creative-license.png"],
   },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+      { url: "/avatar_o.png", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    shortcut: "/avatar_o.png",
+  },
 };
 
 export const viewport: Viewport = {
@@ -68,9 +77,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${spaceMono.variable} ${inter.variable}`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${spaceMono.variable} ${inter.variable}`}>
       <head>
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" href="/avatar_o.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

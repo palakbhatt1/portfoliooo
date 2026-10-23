@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useMemo, useEffect, useRef } from "react";
-import Link from "next/link";
+import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { ProductHeader } from "@/components/product/ProductHeader";
 import { ProductFooter } from "@/components/product/ProductFooter";
 import { LicenseModal } from "@/components/home/LicenseModal";
+import { ProjectDetailView } from "@/components/product/ProjectDetailView";
 import { projects, Project } from "@/lib/projects";
 
 import {
@@ -14,9 +14,10 @@ import {
   LeetCodeIcon,
   BehanceIcon,
   InstagramIcon,
+  FigmaIcon,
 } from "@/components/ui/Icons";
 
-type ViewMode = "all" | "ai-ml" | "design-product";
+type ViewMode = "all" | "design-product" | "ai-ml";
 
 interface ProjectGroup {
   heading: string;
@@ -28,9 +29,99 @@ export default function ProjectsPage() {
   const [isLicenseModalOpen, setIsLicenseModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("all");
   const [isNoteOpen, setIsNoteOpen] = useState(false);
+  const [selectedProjectSlug, setSelectedProjectSlug] = useState<string | null>(null);
+
+  const selectedProject = useMemo(() => {
+    return selectedProjectSlug ? projects.find((p) => p.slug === selectedProjectSlug) || null : null;
+  }, [selectedProjectSlug]);
+
+  // Sync with query parameter ?project=slug and browser back/forward history
+  useEffect(() => {
+    // Check initial URL on mount/refresh
+    if (typeof window !== "undefined") {
+      const searchParams = new URLSearchParams(window.location.search);
+      const querySlug = searchParams.get("project");
+      const match = window.location.pathname.match(/\/work\/([^/]+)/);
+      const initial = querySlug || (match ? match[1] : null);
+      if (initial) {
+        setSelectedProjectSlug(initial);
+      }
+    }
+
+    const handlePopState = () => {
+      const searchParams = new URLSearchParams(window.location.search);
+      const querySlug = searchParams.get("project");
+      const match = window.location.pathname.match(/\/work\/([^/]+)/);
+      const slug = querySlug || (match ? match[1] : null);
+      setSelectedProjectSlug(slug || null);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  const handleOpenProject = (slug: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    setSelectedProjectSlug(slug);
+    try {
+      window.history.pushState(null, "", `/projects?project=${slug}`);
+    } catch {
+      // Ignore
+    }
+  };
+
+  const handleCloseProject = () => {
+    setSelectedProjectSlug(null);
+    try {
+      window.history.pushState(null, "", "/projects");
+    } catch {
+      // Ignore
+    }
+  };
+
+  const handleNavigateProject = (slug: string) => {
+    setSelectedProjectSlug(slug);
+    try {
+      window.history.pushState(null, "", `/projects?project=${slug}`);
+    } catch {
+      // Ignore
+    }
+  };
 
   const noteRef = useRef<HTMLDivElement | null>(null);
   const avatarBtnRef = useRef<HTMLButtonElement | null>(null);
+  // Instant tactile click via Web Audio API: 20ms sharp snap that begins and terminates immediately
+  const playInstantClick = useCallback(() => {
+    try {
+      const AudioCtx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(1800, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.02);
+
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.02);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + 0.02);
+    } catch {
+      // Audio fallback
+    }
+  }, []);
+
+  const handleAvatarClick = useCallback(() => {
+    playInstantClick();
+    setIsNoteOpen((prev) => !prev);
+  }, [playInstantClick]);
 
   // Close note on Escape key or outside click
   useEffect(() => {
@@ -56,63 +147,62 @@ export default function ProjectsPage() {
     };
   }, [isNoteOpen]);
 
-  // Ensure navigating home from projects skips the intro landing screen
+  // Ensure navigating home from projects skips the intro landing screen within this tab session
   useEffect(() => {
     try {
       sessionStorage.setItem("palak_intro_seen", "true");
-      localStorage.setItem("palak_intro_seen", "true");
     } catch {
       // Ignore
     }
   }, []);
 
-  const handleGoHome = () => {
-    try {
-      sessionStorage.setItem("palak_intro_seen", "true");
-      localStorage.setItem("palak_intro_seen", "true");
-    } catch {
-      // Ignore
-    }
-  };
-
   // Filter/group projects based on active view mode: ALL PROJECTS · AI & ML · DESIGN & PRODUCT
   const projectGroups = useMemo<ProjectGroup[]>(() => {
-    if (viewMode === "ai-ml") {
-      return [
-        {
-          heading: "AI & ML",
-          subheading: "Code Dependency Analyzer & DevEx Platform (2024)",
-          items: projects.filter((p) => p.slug === "logiclens"),
-        },
-      ];
-    }
+    const aiSlugs = ["claimxplain", "logiclens", "personapath", "pathwise"];
+    const dpSlugs = ["ablecircle", "antisoch", "simply-hemp", "ustart"];
 
     if (viewMode === "design-product") {
       return [
         {
           heading: "Design & Product",
-          subheading: "Caregiver Ecosystem, Safety & Sustainable Commerce (2024 — 2026)",
-          items: projects.filter((p) => p.slug !== "logiclens"),
+          items: projects.filter((p) => dpSlugs.includes(p.slug)),
         },
       ];
     }
 
-    // Default: "all" (ALL PROJECTS - chronological breakdown by milestone)
+    if (viewMode === "ai-ml") {
+      return [
+        {
+          heading: "AI & ML",
+          items: projects.filter((p) => aiSlugs.includes(p.slug)),
+        },
+      ];
+    }
+
+    // Default: "all" (ALL PROJECTS - chronological breakdown: 2026, 2025, 2024)
     return [
       {
         heading: "2026",
-        subheading: "Flagship Initiative · Caregiver Ecosystem",
-        items: projects.filter((p) => p.slug === "ablecircle"),
+        items: [
+          projects.find((p) => p.slug === "ablecircle"),
+          projects.find((p) => p.slug === "logiclens"),
+          projects.find((p) => p.slug === "claimxplain"),
+          projects.find((p) => p.slug === "personapath"),
+        ].filter(Boolean) as Project[],
       },
       {
         heading: "2025",
-        subheading: "Interaction & Safety Design",
-        items: projects.filter((p) => p.slug === "antisoch"),
+        items: [
+          projects.find((p) => p.slug === "antisoch"),
+          projects.find((p) => p.slug === "ustart"),
+          projects.find((p) => p.slug === "pathwise"),
+        ].filter(Boolean) as Project[],
       },
       {
         heading: "2024",
-        subheading: "Startup Prototype & Dev Intelligence",
-        items: projects.filter((p) => p.slug === "simply-hemp" || p.slug === "logiclens"),
+        items: [
+          projects.find((p) => p.slug === "simply-hemp"),
+        ].filter(Boolean) as Project[],
       },
     ];
   }, [viewMode]);
@@ -169,18 +259,6 @@ export default function ProjectsPage() {
 
                   <button
                     type="button"
-                    onClick={() => setViewMode("ai-ml")}
-                    className={`px-3 py-1 sm:px-3.5 sm:py-1 rounded-full text-xs font-mono font-medium transition-all cursor-pointer ${
-                      viewMode === "ai-ml"
-                        ? "bg-neutral-900 text-white shadow-xs"
-                        : "bg-white/70 border border-neutral-300 text-neutral-600 hover:text-neutral-900 hover:border-neutral-700"
-                    }`}
-                  >
-                    AI &amp; ML
-                  </button>
-
-                  <button
-                    type="button"
                     onClick={() => setViewMode("design-product")}
                     className={`px-3 py-1 sm:px-3.5 sm:py-1 rounded-full text-xs font-mono font-medium transition-all cursor-pointer ${
                       viewMode === "design-product"
@@ -189,6 +267,18 @@ export default function ProjectsPage() {
                     }`}
                   >
                     DESIGN &amp; PRODUCT
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("ai-ml")}
+                    className={`px-3 py-1 sm:px-3.5 sm:py-1 rounded-full text-xs font-mono font-medium transition-all cursor-pointer ${
+                      viewMode === "ai-ml"
+                        ? "bg-neutral-900 text-white shadow-xs"
+                        : "bg-white/70 border border-neutral-300 text-neutral-600 hover:text-neutral-900 hover:border-neutral-700"
+                    }`}
+                  >
+                    AI &amp; ML
                   </button>
                 </div>
               </div>
@@ -201,25 +291,31 @@ export default function ProjectsPage() {
                     Pr
                   </span>
                   
-                  {/* Caricature replacing 'o', clickable button to toggle the bio note */}
+                  {/* Caricature replacing 'o', clickable button to toggle the bio note with instant click & refined movement */}
                   <button
                     ref={avatarBtnRef}
                     type="button"
-                    onClick={() => setIsNoteOpen((prev) => !prev)}
+                    onClick={handleAvatarClick}
                     aria-label={isNoteOpen ? "Close bio note" : "Open bio note"}
                     aria-expanded={isNoteOpen}
                     title="Click to view bio note"
-                    className="inline-block relative -mb-0.5 sm:-mb-1 -mx-1.5 sm:-mx-2.5 md:-mx-3 flex-shrink-0 transition-transform duration-200 hover:scale-110 active:scale-95 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 rounded-full"
+                    className="inline-block relative -mb-0.5 sm:-mb-1 -mx-1.5 sm:-mx-2.5 md:-mx-3 flex-shrink-0 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 rounded-full group/avatar"
                   >
-                    <Image
-                      src="/avatar_o.png"
-                      alt="Palak"
-                      width={64}
-                      height={70}
-                      priority
-                      unoptimized
-                      className="w-10 sm:w-12 md:w-14 h-auto object-contain drop-shadow-xs pointer-events-none"
-                    />
+                    <div
+                      className={`transition-transform duration-200 group-hover/avatar:scale-[1.08] active:scale-95 ${
+                        isNoteOpen ? "scale-100" : "animate-avatar-curious"
+                      }`}
+                    >
+                      <Image
+                        src="/avatar_o.png"
+                        alt="Palak"
+                        width={64}
+                        height={70}
+                        priority
+                        unoptimized
+                        className="w-10 sm:w-12 md:w-13.5 h-auto object-contain drop-shadow-xs pointer-events-none select-none"
+                      />
+                    </div>
                   </button>
 
                   <span className="text-4xl sm:text-5xl md:text-6xl font-black tracking-[-0.07em] text-neutral-900 leading-none inline-block transform scale-y-[1.14] origin-bottom">
@@ -333,105 +429,136 @@ export default function ProjectsPage() {
                 </div>
               </div>
 
-            {/* Project Sections Grouped with Serif Headings */}
-            <div className="space-y-7 sm:space-y-8 pt-1">
+            {/* Project Sections Grouped with Serif Headings matching reference */}
+            <div className="space-y-8 sm:space-y-10 pt-1">
               {projectGroups.map((group) => (
-                <section key={group.heading} className="space-y-3">
+                <section key={group.heading} className="space-y-2">
                   {/* Date / Category Serif Heading */}
-                  <div className="flex items-baseline justify-between gap-4">
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif italic text-[#bd3a25] tracking-tight">
-                      {group.heading}
-                    </h2>
-                    {group.subheading && (
-                      <span className="text-[11px] font-mono text-neutral-400 hidden sm:inline-block">
-                        {group.subheading}
-                      </span>
-                    )}
-                  </div>
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif italic text-[#bd3a25] tracking-tight">
+                    {group.heading}
+                  </h2>
 
-                  {/* Horizontal Rule Under Section Title */}
+                  {/* Clean Hairline Rule Under Section Title */}
                   <div className="w-full border-b border-neutral-300" />
 
                   {/* Project Rows */}
                   <div className="divide-y divide-neutral-200/80">
-                    {group.items.map((proj) => (
-                      <Link
-                        key={proj.slug}
-                        href={`/work/${proj.slug}`}
-                        className="group py-4 sm:py-5 px-3 -mx-3 rounded-lg transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 hover:bg-neutral-900/[0.04] block"
-                      >
-                        {/* Column 1: Project Title + Category */}
-                        <div className="md:w-[28%] flex-shrink-0 space-y-0.5">
-                          <h3 className="text-base sm:text-lg font-bold text-neutral-900 group-hover:text-[#bd3a25] transition-colors flex items-center gap-1.5">
-                            <span>{proj.title}</span>
-                            <span className="inline-block text-xs opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#bd3a25]">
-                              ↗
-                            </span>
-                          </h3>
-                          <div className="text-[11px] font-mono text-neutral-500">
-                            {proj.category}
+                    {group.items.map((proj) => {
+                        const isLogicLens = proj.slug === "logiclens";
+                        const demoUrl = isLogicLens ? (proj.links?.demo || proj.demoUrl) : null;
+                        const githubUrl = proj.links?.github || proj.githubUrl;
+                        const figmaUrl = proj.links?.figma || (proj.links?.prototype?.includes("figma") ? proj.links.prototype : null);
+                        const behanceUrl = proj.links?.behance || (proj.links?.caseStudy && proj.links.caseStudy.includes("behance") ? proj.links.caseStudy : null);
+
+                        return (
+                          <div
+                            key={proj.slug}
+                            onClick={(e) => handleOpenProject(proj.slug, e)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                handleOpenProject(proj.slug, e as unknown as React.MouseEvent);
+                              }
+                            }}
+                            role="button"
+                            tabIndex={0}
+                            aria-label={`Open project details for ${proj.title}`}
+                            className="group py-4 sm:py-5 px-3 -mx-3 rounded-xl transition-all duration-200 flex flex-col md:flex-row md:items-start justify-between gap-3 sm:gap-6 hover:bg-neutral-900/[0.04] cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-neutral-900"
+                          >
+                            {/* Column 1: Project Title + Action Logo Buttons underneath */}
+                            <div className="md:w-[32%] lg:w-[34%] flex-shrink-0 space-y-2">
+                              <h3 className="text-base sm:text-lg font-bold text-neutral-900 group-hover:text-[#bd3a25] transition-colors leading-snug">
+                                {proj.title}
+                              </h3>
+
+                              {/* Logos of Buttons directly under the Project Title */}
+                              <div className="flex items-center flex-wrap gap-1.5 pt-0.5">
+                                {demoUrl && (
+                                  <a
+                                    href={demoUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                    title="Try it Now"
+                                    className="inline-flex items-center gap-1 text-[10px] font-mono font-bold tracking-wider px-2.5 py-0.5 rounded-full border border-[#7a9161]/50 bg-[#92a878]/25 text-[#1b3411] hover:bg-[#92a878] hover:text-[#0b1606] transition-all shadow-2xs whitespace-nowrap cursor-pointer"
+                                  >
+                                    <span>Try it Now</span>
+                                    <span className="text-[11px] leading-none">↗</span>
+                                  </a>
+                                )}
+
+                                {figmaUrl && (
+                                  <a
+                                    href={figmaUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                    title="Figma Prototype"
+                                    aria-label="Figma Prototype"
+                                    className="w-6 h-6 rounded-full border border-neutral-300 hover:border-neutral-900 bg-white hover:bg-white flex items-center justify-center transition-all shadow-2xs group/btn cursor-pointer"
+                                  >
+                                    <FigmaIcon className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
+                                  </a>
+                                )}
+
+                                {behanceUrl && (
+                                  <a
+                                    href={behanceUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                    title="Behance Case Study"
+                                    aria-label="Behance Case Study"
+                                    className="w-6 h-6 rounded-full border border-neutral-300 hover:border-neutral-900 bg-white/90 hover:bg-neutral-900 text-neutral-700 hover:text-white flex items-center justify-center transition-all shadow-2xs group/btn cursor-pointer"
+                                  >
+                                    <BehanceIcon className="w-3 h-3 group-hover/btn:scale-110 transition-transform" />
+                                  </a>
+                                )}
+
+                                {githubUrl && (
+                                  <a
+                                    href={githubUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                    title="GitHub"
+                                    aria-label="GitHub"
+                                    className="w-6 h-6 rounded-full border border-neutral-300 hover:border-neutral-900 bg-white/90 hover:bg-neutral-900 text-neutral-700 hover:text-white flex items-center justify-center transition-all shadow-2xs group/btn cursor-pointer"
+                                  >
+                                    <GithubIcon className="w-3 h-3 group-hover/btn:scale-110 transition-transform" />
+                                  </a>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Column 2: One-line Sentence Description */}
+                            <div className="md:w-[66%] lg:w-[64%] flex-grow">
+                              <p className="text-xs sm:text-[13px] text-neutral-600 leading-relaxed font-sans">
+                                {proj.oneLiner || proj.description}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-
-                        {/* Column 2: Project Description */}
-                        <div className="md:w-[48%] flex-grow">
-                          <p className="text-xs sm:text-[13px] text-neutral-700 leading-relaxed font-mono">
-                            {proj.description}
-                          </p>
-                        </div>
-
-                        {/* Column 3: Badge Pill */}
-                        <div className="md:w-[24%] flex md:justify-end items-center flex-shrink-0">
-                          <span className="inline-flex items-center text-[10.5px] sm:text-[11px] font-mono font-bold tracking-wider px-3.5 py-1 rounded-full border border-neutral-300 text-neutral-800 bg-white/80 shadow-2xs group-hover:border-neutral-900 group-hover:bg-neutral-900 group-hover:text-white transition-all whitespace-nowrap">
-                            {proj.metrics || proj.badge?.split("·")[0] || "CASE STUDY"}
-                          </span>
-                        </div>
-                      </Link>
-                    ))}
+                      );
+                    })}
                   </div>
                 </section>
               ))}
-            </div>
-
-            {/* Bottom Card Footer */}
-            <div className="pt-6 border-t border-neutral-200/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-neutral-500">
-              <Link
-                href="/"
-                onClick={handleGoHome}
-                className="inline-flex items-center gap-1.5 hover:text-neutral-900 transition-colors"
-              >
-                <span>&larr;</span>
-                <span>Back to portfolio home</span>
-              </Link>
-              <div className="flex items-center gap-4">
-                <Link href="/resume" className="hover:text-neutral-900 transition-colors">
-                  View Resume
-                </Link>
-                <span>&middot;</span>
-                <a
-                  href="https://github.com/palakbhatt1"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-neutral-900 transition-colors"
-                >
-                  GitHub ↗
-                </a>
-                <span>&middot;</span>
-                <a
-                  href="https://www.linkedin.com/in/palakbhatt1"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-neutral-900 transition-colors"
-                >
-                  LinkedIn ↗
-                </a>
-              </div>
             </div>
 
             <ProductFooter />
           </main>
         </div>
       </div>
+
+      {/* Project Detail Overlay Drawer */}
+      {selectedProject && (
+        <ProjectDetailView
+          project={selectedProject}
+          onClose={handleCloseProject}
+          onNavigate={handleNavigateProject}
+          isOverlay={true}
+        />
+      )}
 
       {/* 3D License Modal */}
       <LicenseModal

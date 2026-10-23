@@ -43,3 +43,9 @@ next-env.d.ts
 # local references & scratch
 /landing_page_ref/
 scratch_*
+/.worktree/
+
+# docs & internal markdown files (keep only README.md)
+/docs/
+*.md
+!README.md

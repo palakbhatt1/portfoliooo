@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { HoldButton } from "@/components/ui/HoldButton";
 
 export const ProductEducationExperience: React.FC = () => {
   return (
@@ -59,13 +60,13 @@ export const ProductEducationExperience: React.FC = () => {
               EXPERIENCE
             </h2>
 
-            <Link
+            <HoldButton
               href="/resume"
-              className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 border border-neutral-900 text-neutral-900 text-[11px] sm:text-xs font-bold uppercase tracking-wider hover:bg-neutral-900 hover:text-white transition-all shadow-2xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider"
             >
               <span>VIEW RESUME</span>
               <span className="text-xs sm:text-sm leading-none">↗</span>
-            </Link>
+            </HoldButton>
           </div>
 
           {/* Vertical Timeline with Green Dots */}

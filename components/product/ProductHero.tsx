@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { HoldButton } from "@/components/ui/HoldButton";
 
 export const ProductHero: React.FC = () => {
   return (
@@ -41,15 +41,15 @@ export const ProductHero: React.FC = () => {
           </p>
         </div>
 
-        {/* Action Button: EXPLORE MY WORK */}
+        {/* Action Button: EXPLORE MY WORK (Hold to Activate) */}
         <div className="pt-2">
-          <Link
+          <HoldButton
             href="/projects"
-            className="inline-flex items-center gap-2 px-5 py-2.5 border border-neutral-900 text-neutral-900 text-xs font-bold uppercase tracking-wider hover:bg-neutral-900 hover:text-white transition-all shadow-2xs"
+            className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-wider"
           >
             <span>EXPLORE MY WORK</span>
             <span className="text-sm leading-none">↗</span>
-          </Link>
+          </HoldButton>
         </div>
       </div>
 

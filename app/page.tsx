@@ -22,9 +22,14 @@ export default function Home() {
         typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
       const forceIntro = params?.get("intro") === "true" || params?.get("intro") === "1";
       const skipIntro = params?.get("skipIntro") === "true";
-      const seen =
-        sessionStorage.getItem("palak_intro_seen") === "true" ||
-        localStorage.getItem("palak_intro_seen") === "true";
+      // Purge any stale localStorage entry so new tabs always trigger the creative intro
+      try {
+        localStorage.removeItem("palak_intro_seen");
+      } catch {
+        // Ignore
+      }
+
+      const seen = sessionStorage.getItem("palak_intro_seen") === "true";
 
       if ((seen || skipIntro) && !forceIntro) {
         setIntroActive(false);
@@ -46,7 +51,6 @@ export default function Home() {
   const handleStartReveal = useCallback(() => {
     try {
       sessionStorage.setItem("palak_intro_seen", "true");
-      localStorage.setItem("palak_intro_seen", "true");
     } catch {
       // Ignore
     }
@@ -57,7 +61,6 @@ export default function Home() {
   const handleIntroComplete = useCallback(() => {
     try {
       sessionStorage.setItem("palak_intro_seen", "true");
-      localStorage.setItem("palak_intro_seen", "true");
     } catch {
       // Ignore
     }
@@ -69,7 +72,6 @@ export default function Home() {
   const handleReplayIntro = useCallback(() => {
     try {
       sessionStorage.removeItem("palak_intro_seen");
-      localStorage.removeItem("palak_intro_seen");
     } catch {
       // Ignore
     }
